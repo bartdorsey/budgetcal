@@ -18,6 +18,7 @@
   "dependencies": {
     "@types/http-errors": "^1.8.1",
     "bcrypt": "^5.0.1",
+    "connect-session-sequelize": "^7.1.1",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^10.0.0",
@@ -27,9 +28,11 @@
     "morgan": "~1.9.1",
     "per-env": "^1.0.2",
     "pg": "^8.7.1",
+    "reflect-metadata": "^0.1.13",
     "sequelize": "^6.6.5",
     "sequelize-cli": "^6.2.0",
-    "sequelize-pretty-logger": "^1.0.2"
+    "sequelize-pretty-logger": "^1.0.2",
+    "sequelize-typescript": "^2.1.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -40,6 +43,7 @@
     "@types/express-session": "^1.17.4",
     "@types/morgan": "^1.9.3",
     "@types/node": "^16.4.7",
+    "@types/validator": "^13.6.3",
     "dotenv-cli": "^4.0.0",
     "ts-node": "^10.1.0",
     "tsc-watch": "^4.4.0",

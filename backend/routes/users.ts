@@ -2,7 +2,7 @@ import express from 'express';
 const userRouter = express.Router();
 import { asyncErrorHandler } from './utils';
 import { authRequired } from '../middleware/authMiddleware';
-import { User } from '../models/index';
+import User from '../models/User';
 import { UserSession } from '../types/auth';
 
 // GET /api/users/profile

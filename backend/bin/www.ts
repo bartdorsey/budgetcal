@@ -2,10 +2,12 @@
  * Module dependencies.
  */
 
-import app from '../app';
 import debugBuilder from 'debug';
+import sequelize from '../sequelizeSetup';
+import app from '../app';
 const debug = debugBuilder('backend:server');
 import http from 'http';
+
 
 /**
  * Get port from environment and store in Express.
@@ -80,7 +82,8 @@ function onError(error: NodeJS.ErrnoException ) {
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
+async function onListening() {
+  await sequelize.query('SELECT (1+1)');
   const addr = server.address();
   const bind = typeof addr === 'string'
     ? 'pipe ' + addr

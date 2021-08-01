@@ -1,6 +1,6 @@
 import express from 'express';
 const authRouter = express.Router();
-import { User } from '../models/index';
+import User from '../models/User';
 import bcrypt from 'bcrypt';
 import { asyncErrorHandler } from './utils';
 import { RegistrationRequest, LoginRequest, UserSession } from '../types/auth';
