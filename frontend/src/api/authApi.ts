@@ -22,11 +22,25 @@ type LoggedOutResponse = {
     message: string
 }
 
+type RegistrationError = {
+    status: number,
+    statusCode: number,
+    message: string,
+    expose: boolean
+}
+
+type LoginError = {
+    status: number,
+    statusCode: number,
+    message: string,
+    expose: boolean
+}
+
 export const authApi = createApi({
     reducerPath: 'authApi',
     baseQuery: fetchBaseQuery({baseUrl: '/api'}),
     endpoints: builder => ({
-        signUp: builder.mutation<User, RegistrationRequest>({
+        signUp: builder.mutation<User | RegistrationError, RegistrationRequest>({
             query: ({username, email, password, confirmPassword}) => ({
                 url: '/auth/register',
                 method: 'POST',
@@ -38,7 +52,7 @@ export const authApi = createApi({
                 }
             })
         }),
-        login: builder.mutation<User, LoginRequest>({
+        login: builder.mutation<User | LoginError, LoginRequest>({
             query: ({email, password}) => ({
                 url: '/auth/login',
                 method: 'POST',

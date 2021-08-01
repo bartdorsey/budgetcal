@@ -29,5 +29,8 @@ export default function useAuthRequired() {
       }
     }, [isError]);
 
-    return mutationResult;
+    return {
+        ...mutationResult,
+        authenticated: !mutationResult.isError
+    };
 }

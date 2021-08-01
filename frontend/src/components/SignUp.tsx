@@ -1,101 +1,103 @@
 import React, { SyntheticEvent, useState } from 'react';
-import { Redirect, useHistory } from 'react-router';
+import { useHistory } from 'react-router';
 import { useSignUpMutation } from '../api/authApi';
 import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-    Button,
-    Input,
-    FormControl,
-    Stack,
-} from '@chakra-ui/react';
+  FormControl,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+} from '@material-ui/core';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@material-ui/core/styles';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../slices/authSlice';
 
-interface SignUpProps { }
+interface SignUpProps {}
 
-function SignUp({ }: SignUpProps) {
-    const [signUp, { data, isLoading, isError, error }] = useSignUpMutation();
+function SignUp({}: SignUpProps) {
+  const [signUp, { data, isLoading, isError, error }] = useSignUpMutation();
+  const dispatch = useDispatch();
+  const theme = useTheme();
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const history = useHistory();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const history = useHistory();
-
-    const onClose = () => { 
-        history.push('/');
-    };
-
-    const handleSubmit = (e: SyntheticEvent) => {
-        e.preventDefault();
-        signUp({
-            username,
-            email,
-            password,
-            confirmPassword,
-        });
-    };
-
-    if (data) {
-        return <Redirect to="/" />;
+  const handleSubmit = async (e: SyntheticEvent) => {
+    const user = signUp({
+      username,
+      email,
+      password,
+      confirmPassword,
+    }).unwrap();
+    if (user) {
+      dispatch(setUser(user));
+      history.push('/');
     }
+  };
 
-    return (
-            <Modal isOpen={true} onClose={onClose}>
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>Sign Up</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        <Stack spacing="3">
-                            <FormControl>
-                                <Input
-                                    name="username"
-                                    placeholder="Username"
-                                    type="text"
-                                    onChange={(e) => setUsername(e.target.value)}
-                                    value={username}
-                                />
-                            </FormControl>
-                            <FormControl>
-                                <Input
-                                    name="email"
-                                    placeholder="Email Address"
-                                    type="email"
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    value={email}
-                                />
-                            </FormControl>
-                            <FormControl>
-                                <Input
-                                    name="password"
-                                    placeholder="Password"
-                                    type="password"
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    value={password}
-                                />
-                            </FormControl>
-                            <FormControl>
-                                <Input
-                                    name="confirmPassword"
-                                    placeholder="Confirm Password"
-                                    type="password"
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    value={confirmPassword}
-                                />
-                            </FormControl>
-                        </Stack>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button onClick={handleSubmit} colorScheme="blue">Sign Up</Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
-    );
+  console.log(isError, error);
+
+  return (
+    <Dialog open={true} fullScreen={fullScreen}>
+      <DialogTitle>Welcome to BudgetCal</DialogTitle>
+      <DialogContent>
+        <FormControl>
+          <TextField
+            id="usermame"
+            aria-describedby="username"
+            margin="dense"
+            type="username"
+            label="Username"
+            onChange={(e) => setUsername(e.target.value)}
+            value={username}
+            fullWidth
+          />
+          <TextField
+            id="email"
+            aria-describedby="email"
+            margin="dense"
+            type="email"
+            label="Email Address"
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+            fullWidth
+          />
+          <TextField
+            id="password"
+            aria-describedby="username"
+            margin="dense"
+            label="Password"
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+          />
+          <TextField
+            id="confirmPassword"
+            aria-describedby="Confirm Password"
+            margin="dense"
+            label="Confirm Password"
+            type="password"
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            value={confirmPassword}
+          />
+        </FormControl>
+        <DialogActions>
+          <Button onClick={handleSubmit} color="primary">
+            Sign Up
+          </Button>
+          <Button onClick={() => history.push('/login')} color="secondary">
+            Login
+          </Button>
+        </DialogActions>
+      </DialogContent>
+    </Dialog>
+  );
 }
 
 export default SignUp;

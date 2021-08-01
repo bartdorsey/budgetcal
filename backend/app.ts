@@ -32,7 +32,10 @@ app.use('/api', apiRouter);
 
 app.use(((error, req, res, next) => {
     appError(error);
-    res.status(error.statusCode).json(error);
+    res.status(error.statusCode).json({
+        ...error,
+        message: error.message
+    });
 }) as ErrorRequestHandler);
 
 export default app;

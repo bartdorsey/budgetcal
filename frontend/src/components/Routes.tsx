@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react';
-import { Route, Switch, useHistory } from 'react-router-dom';
-import useAsyncEffect from '../hooks/useAsyncEffect';
-import { useProtectedMutation } from '../api/authApi';
+import React from 'react';
+import { Route, Switch } from 'react-router-dom';
 import Home from './Home';
 import Login from './Login';
 import SignUp from './SignUp';

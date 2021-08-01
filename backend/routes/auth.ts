@@ -9,11 +9,15 @@ import { authRequired } from '../middleware/authMiddleware';
 
 const SALT_ROUNDS = 10;
 
-authRouter.post('/register', asyncErrorHandler(async(req, res) => {
+authRouter.post('/register', asyncErrorHandler(async(req, res, next) => {
     const { username, email, password, confirmPassword } = req.body as RegistrationRequest;
-    console.log(password);
+    if (!username && !email && !password && !confirmPassword) {
+        next(createError(400, new Error('Fields Required')));
+        return;
+    }
     if (password !== confirmPassword) {
-        throw new Error("Passwords don't match");
+        next(createError(400, new Error("Passwords don't match")));
+        return;
     }
     const user = await User.create({
         username,
