@@ -1,0 +1,31 @@
+User 
+-
+id PK int
+username string
+email string
+hashedPassword string
+
+UserBudgets
+-
+id PK int
+userId int FK >- User.id
+budgetId int FK >- Budget.id
+readOnly boolean
+
+Budget
+-
+id PK int
+name string
+amount currency
+color enum
+icon string
+
+Transaction
+-
+id PK int
+description string
+amount currency
+date date
+interval enum
+budgetId int FK >- Budget.id
+endDate date
