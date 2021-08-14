@@ -1,6 +1,6 @@
 'use strict';
 import { Optional } from "sequelize";
-import { Table, Column, Model, AllowNull, BelongsToMany } from "sequelize-typescript";
+import { Table, Column, Model, AllowNull, BelongsToMany, Default } from "sequelize-typescript";
 import User from "./User";
 import UserBudget from "./UserBudget";
 
@@ -36,10 +36,12 @@ export class Budget extends Model<BudgetAttributes, BudgetCreationAttributes> {
   public amount!: number;
 
   @AllowNull(false)
+  @Default('none')
   @Column
-  public color!: string;    
+  public color!: string;
 
   @AllowNull(false)
+  @Default('AttachMoney')
   @Column
   public icon!:string
 

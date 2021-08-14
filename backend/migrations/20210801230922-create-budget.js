@@ -18,11 +18,11 @@ module.exports = {
       },
       color: {
         type: Sequelize.STRING,
-        allowNull: false
+        defaultValue: 'none'
       },
       icon: {
         type: Sequelize.STRING,
-        allowNull: false
+        defaultValue: 'AttachMoney'
       },
       createdAt: {
         allowNull: false,

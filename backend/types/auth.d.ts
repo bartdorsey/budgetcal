@@ -1,4 +1,12 @@
 import type { Session } from 'express-session';
+import User from '../models/User'
+
+// Merge our User class into the Express Session module
+declare module 'express-session' {
+    interface Session {
+        user: User
+    }
+}
 
 type RegistrationRequest = {
     username: string,
@@ -10,8 +18,4 @@ type RegistrationRequest = {
 type LoginRequest = {
     email: string,
     password: string
-}
-
-interface UserSession extends Session {
-    user?: User
 }
