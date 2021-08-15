@@ -4,10 +4,15 @@
 
 import debugBuilder from 'debug';
 import sequelize from '../sequelizeSetup';
+import { migrateAll } from '../migrations';
 import app from '../app';
 const debug = debugBuilder('backend:server');
 import http from 'http';
-
+import { exit } from 'process';
+import PrettyError from 'pretty-error';
+const pe = new PrettyError();
+pe.skipNodeFiles();
+const logError = (error: Error) => console.log(pe.render(error));
 
 /**
  * Get port from environment and store in Express.
@@ -83,10 +88,17 @@ function onError(error: NodeJS.ErrnoException ) {
  */
 
 async function onListening() {
-  await sequelize.query('SELECT (1+1)');
-  const addr = server.address();
-  const bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + port;
-  debug('Listening on ' + bind);
+  try {
+    await sequelize.query('SELECT 1+1;');
+    await migrateAll();
+    const addr = server.address();
+    const bind = typeof addr === 'string'
+      ? 'pipe ' + addr
+      : 'port ' + port;
+    debug('Listening on ' + bind);
+  }
+  catch (error) {
+    logError(error);
+    exit(1);
+  }
 }

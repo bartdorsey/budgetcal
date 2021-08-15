@@ -1,4 +1,3 @@
-'use strict';
 import { Optional } from "sequelize";
 import { Table, Column, Model, AllowNull, BelongsToMany, Default } from "sequelize-typescript";
 import User from "./User";

@@ -6,12 +6,16 @@ import session from 'express-session';
 import logger from 'morgan';
 import connectSessionSequelize from 'connect-session-sequelize';
 import sequelize from './sequelizeSetup';
-const secret = process.env.SESSION_SECRET || "secret";
 import debug from 'debug';
+import PrettyError from 'pretty-error';
+import apiRouter from './routes/api';
+
+const pe = new PrettyError();
+pe.skipNodeFiles();
+pe.skipPackage('express');
+const secret = process.env.SESSION_SECRET || "secret";
 const appError = debug('app:error');
 const storeConstructor = connectSessionSequelize(session.Store);
-
-import apiRouter from './routes/api';
 
 const app = express();
 
@@ -41,7 +45,7 @@ app.use('/api', apiRouter);
 
 app.use(((error, req, res, next) => {
     
-    appError(error);
+    appError(pe.render(error));
     if (error.statusCode) {
         res.status(error.statusCode)
     } else {
