@@ -29,7 +29,7 @@ function SignUp({}: SignUpProps) {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleSubmit = async (e: SyntheticEvent) => {
-    const user = signUp({
+    const user = await signUp({
       username,
       email,
       password,
@@ -41,13 +41,13 @@ function SignUp({}: SignUpProps) {
     }
   };
 
-  console.log(isError, error);
+  console.dir(error?.data);
 
   return (
     <Dialog open={true} fullScreen={fullScreen}>
       <DialogTitle>Welcome to BudgetCal</DialogTitle>
       <DialogContent>
-        <FormControl>
+        <FormControl error={isError}>
           <TextField
             id="usermame"
             aria-describedby="username"
@@ -56,6 +56,8 @@ function SignUp({}: SignUpProps) {
             label="Username"
             onChange={(e) => setUsername(e.target.value)}
             value={username}
+            error={isError}
+            helperText={error?.data?.message}
             fullWidth
           />
           <TextField
