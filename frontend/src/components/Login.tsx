@@ -1,4 +1,4 @@
-import React, { useState, SyntheticEvent } from 'react';
+import React, { useState } from 'react';
 import { useLoginMutation } from '../api/authApi';
 import { useHistory } from 'react-router-dom';
 import { setUser } from '../slices/authSlice';
@@ -21,13 +21,13 @@ function Login({}: LoginProps) {
   const dispatch = useDispatch();
   const history = useHistory();
   const theme = useTheme();
-  const [login, { isError, error }] = useLoginMutation();
+  const [login] = useLoginMutation();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = async (e: SyntheticEvent) => {
+  const handleSubmit = async () => {
     const user = await login({
       email,
       password,

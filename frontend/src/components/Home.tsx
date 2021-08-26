@@ -1,7 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import useUser from '../hooks/useUser';
-import type { User } from '../api/authApi';
 
 interface HomeProps {
 }

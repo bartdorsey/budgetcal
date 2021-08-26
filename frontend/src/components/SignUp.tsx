@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import { useSignUpMutation } from '../api/authApi';
 import {
@@ -18,7 +18,7 @@ import { setUser } from '../slices/authSlice';
 interface SignUpProps {}
 
 function SignUp({}: SignUpProps) {
-  const [signUp, { data, isLoading, isError, error }] = useSignUpMutation();
+  const [signUp, { isError }] = useSignUpMutation();
   const dispatch = useDispatch();
   const theme = useTheme();
   const [username, setUsername] = useState('');
@@ -28,8 +28,8 @@ function SignUp({}: SignUpProps) {
   const history = useHistory();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const handleSubmit = async (e: SyntheticEvent) => {
-    const user = signUp({
+  const handleSubmit = async () => {
+    const user = await signUp({
       username,
       email,
       password,
@@ -40,8 +40,6 @@ function SignUp({}: SignUpProps) {
       history.push('/');
     }
   };
-
-  console.log(isError, error);
 
   return (
     <Dialog open={true} fullScreen={fullScreen}>
@@ -56,6 +54,7 @@ function SignUp({}: SignUpProps) {
             label="Username"
             onChange={(e) => setUsername(e.target.value)}
             value={username}
+            error={isError}
             fullWidth
           />
           <TextField
