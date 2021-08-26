@@ -1,7 +1,7 @@
 import type { RequestHandler } from 'express';
 import createHttpError from 'http-errors';
-import User from '../models/User';
-import { asyncErrorHandler } from '../routes/utils';
+import User from '../models/User.js';
+import { asyncErrorHandler } from '../routes/utils.js';
 
 const unauthorizedError = createHttpError(403, new Error('Unauthorized'));
 

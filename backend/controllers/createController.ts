@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { asyncErrorHandler } from '../routes/utils';
+import { asyncErrorHandler } from '../routes/utils.js';
 
 interface ControllerHandlers {
     [fname:string]: RequestHandler

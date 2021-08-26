@@ -1,8 +1,8 @@
 import express from 'express';
 const authRouter = express.Router();
-import { authRequired } from '../middleware/authMiddleware';
-import { register, login, deleteUser, verify } from '../controllers/authController'
-import { registrationValidator } from '../middleware/validators'
+import { authRequired } from '../middleware/authMiddleware.js';
+import { register, login, deleteUser, verify } from '../controllers/authController.js'
+import { registrationValidator } from '../middleware/validators.js'
 
 // POST /api/auth/register
 authRouter.post('/register', registrationValidator, register);

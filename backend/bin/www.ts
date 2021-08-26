@@ -3,9 +3,9 @@
  */
 
 import debugBuilder from 'debug';
-import sequelize from '../sequelizeSetup';
-import { migrateAll } from '../migrations';
-import app from '../app';
+import sequelize from '../sequelizeSetup.js';
+import { migrateAll } from '../migrations.js';
+import app from '../app.js';
 const debug = debugBuilder('backend:server');
 import http from 'http';
 import { exit } from 'process';

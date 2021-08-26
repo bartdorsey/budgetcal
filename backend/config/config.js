@@ -1,8 +1,8 @@
-const { URL } = require('url');
-const path = require('path');
+import { URL } from 'url';
+import path from 'path';
+import debug from 'debug';
 const database_url = process.env.DATABASE_URL;
 const database_config = new URL(database_url);
-const debug = require('debug');
 const env = process.env.NODE_ENV || 'development';
 
 const config = {
@@ -32,4 +32,4 @@ const config = {
 };
 debug('app:config')(config[env]);
 
-module.exports = config;
+export default config;

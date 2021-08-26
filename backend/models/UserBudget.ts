@@ -1,6 +1,6 @@
 import { Table, Column, Model, ForeignKey } from "sequelize-typescript";
-import Budget from "./Budget";
-import User from "./User";
+import Budget from "./Budget.js";
+import User from "./User.js";
 
 @Table({
     tableName: 'user_budget'

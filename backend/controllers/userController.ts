@@ -1,5 +1,5 @@
-import createController from "./createController";
-import User from '../models/User';
+import createController from "./createController.js";
+import User from '../models/User.js';
 
 const userController = createController({
     async getUser(req, res) {

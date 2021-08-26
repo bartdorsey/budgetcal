@@ -1,8 +1,9 @@
-import { UniqueConstraintError } from 'sequelize'
-import createController from "./createController";
-import User from '../models/User';
-import { userExistsError, unauthorizedError } from '../routes/errors';
-import type { RegistrationRequest, LoginRequest } from '../types/auth';
+import Sequelize from 'sequelize';
+const { UniqueConstraintError } = Sequelize;
+import createController from "./createController.js";
+import User from '../models/User.js';
+import { userExistsError, unauthorizedError } from '../routes/errors.js';
+import type { RegistrationRequest, LoginRequest } from '../types/auth.js';
 import bcrypt from 'bcrypt';
 
 const SALT_ROUNDS = 10;

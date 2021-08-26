@@ -1,7 +1,7 @@
 import { ErrorRequestHandler } from "express";
 import createHttpError, { HttpError } from "http-errors";
 import type { ValidationError } from 'express-validator';
-import { appError, appLog } from '../logger';
+import { appError, appLog } from '../logger.js';
 import { serializeError } from 'serialize-error';
 
 export interface AppError {

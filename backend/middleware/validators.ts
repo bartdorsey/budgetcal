@@ -1,6 +1,6 @@
 import { check, validationResult } from 'express-validator';
 import type { RequestHandler } from 'express';
-import { createAppError } from '../routes/errors';
+import { createAppError } from '../routes/errors.js';
 
 export const validate: RequestHandler = (req, {}, next) => {
     const result = validationResult(req);

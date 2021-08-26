@@ -1,8 +1,8 @@
 'use strict';
 import { Optional } from 'sequelize'
 import { Table, Column, Model, AllowNull, Unique, BelongsToMany } from "sequelize-typescript";
-import Budget from './Budget';
-import UserBudget from './UserBudget';
+import Budget from './Budget.js';
+import UserBudget from './UserBudget.js';
 
 interface UserAttributes {
   id: number,

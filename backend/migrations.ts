@@ -1,6 +1,8 @@
 import Umzug from 'umzug';
 import path from 'path';
-import sequelize from './sequelizeSetup';
+import sequelize from './sequelizeSetup.js';
+
+const [_, __dirname] = path.dirname(import.meta.url).split(':')
 
 const umzug = new Umzug({
     migrations: {

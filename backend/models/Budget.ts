@@ -1,7 +1,7 @@
 import { Optional } from "sequelize";
 import { Table, Column, Model, AllowNull, BelongsToMany, Default } from "sequelize-typescript";
-import User from "./User";
-import UserBudget from "./UserBudget";
+import User from "./User.js";
+import UserBudget from "./UserBudget.js";
 
 interface BudgetAttributes {
   id: number,

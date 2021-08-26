@@ -5,13 +5,18 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import logger from 'morgan';
 import connectSessionSequelize from 'connect-session-sequelize';
-import sequelize from './sequelizeSetup';
-import { AppErrorHandler } from './routes/errors';
-import apiRouter from './routes/api';
+import sequelize from './sequelizeSetup.js';
+import { AppErrorHandler } from './routes/errors.js';
+import apiRouter from './routes/api.js';
+// import { createConnection } from 'typeorm';
 import 'reflect-metadata';
+
+const [_, __dirname] = path.dirname(import.meta.url).split(':');
 
 const secret = process.env.SESSION_SECRET || "secret";
 const storeConstructor = connectSessionSequelize(session.Store);
+
+// const connection = await createConnection();
 
 const app = express();
 

@@ -1,5 +1,5 @@
-import createController from "./createController";
-import Budget from "../models/Budget";
+import createController from "./createController.js";
+import Budget from "../models/Budget.js";
 
 const budgetController = createController({
     async getBudgets({ session: { user } }, res) {
