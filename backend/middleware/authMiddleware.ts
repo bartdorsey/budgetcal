@@ -5,7 +5,7 @@ import { asyncErrorHandler } from '../routes/utils';
 
 const unauthorizedError = createHttpError(403, new Error('Unauthorized'));
 
-const authRequired: RequestHandler = asyncErrorHandler(async (req, res, next) => {
+const authRequired: RequestHandler = asyncErrorHandler(async (req, {}, next) => {
   if (!req.session.user) {
     next(unauthorizedError);
     return;
@@ -16,7 +16,6 @@ const authRequired: RequestHandler = asyncErrorHandler(async (req, res, next) =>
     return;
   }
   req.session.user = user;
-  user.reload();
   next();
 });
 

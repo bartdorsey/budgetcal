@@ -42,7 +42,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> {
   @BelongsToMany(() => Budget, () => UserBudget)
   public budgets!: Budget[]
 
-  toJSON() {
+  override toJSON() {
     const user = super.toJSON() as UserPOJO;
     return {
       id: user.id,

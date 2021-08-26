@@ -1,7 +1,7 @@
 import { UniqueConstraintError } from 'sequelize'
 import createController from "./createController";
 import User from '../models/User';
-import { fieldRequiredError, passwordInvalidError, userExistsError, unauthorizedError } from '../routes/errors';
+import { userExistsError, unauthorizedError } from '../routes/errors';
 import type { RegistrationRequest, LoginRequest } from '../types/auth';
 import bcrypt from 'bcrypt';
 
@@ -9,15 +9,8 @@ const SALT_ROUNDS = 10;
 
 const authController = createController({
     async register(req, res, next) {
-        const { username, email, password, confirmPassword } = req.body as RegistrationRequest;
-        if (!username && !email && !password && !confirmPassword) {
-            next(fieldRequiredError('username, email and password'));
-            return;
-        }
-        if (password !== confirmPassword) {
-            next(passwordInvalidError());
-            return;
-        }
+        console.log("inside Register");
+        const { username, email, password } = req.body as RegistrationRequest;
         try {
             const user = await User.create({
                 username,
@@ -30,7 +23,10 @@ const authController = createController({
         catch (error) {
             if (error instanceof UniqueConstraintError) {
                 next(userExistsError(username));
+                return;
             }
+            console.error(error);
+            next(error);
         }
     },
     async login(req, res, next) {
@@ -50,18 +46,17 @@ const authController = createController({
         req.session.user = user;
         res.json(user);
     },
-    async deleteUser(req, res, next) {
+    async deleteUser(req, res) {
         req.session.destroy(() => {
             res.json({
                 message: 'User Logged Out'
             });
         });
     },
-    async restore(req, res) {
-        const user = await User.findByPk(req.session.user.id);
-        res.json(user);
+    async verify(req, res) {
+        res.json(req.session.user);
     }
 });
 
-export const { register, login, deleteUser, restore } = authController;
+export const { register, login, deleteUser, verify } = authController;
 export default authController;

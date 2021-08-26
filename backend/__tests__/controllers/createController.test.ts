@@ -18,7 +18,7 @@ describe('createController', () => {
         const next = jest.fn();
         const error = new Error();
         const mockController = {
-            mockControllerFunction: jest.fn((req, res, next) => {
+            mockControllerFunction: jest.fn(({}={}, {}={}, next) => {
                 next(error);
             })
         }

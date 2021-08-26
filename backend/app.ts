@@ -1,4 +1,4 @@
-import express, { ErrorRequestHandler } from 'express';
+import express from 'express';
 import { Sequelize } from 'sequelize';
 import path from 'path';
 import cookieParser from 'cookie-parser';
@@ -6,15 +6,11 @@ import session from 'express-session';
 import logger from 'morgan';
 import connectSessionSequelize from 'connect-session-sequelize';
 import sequelize from './sequelizeSetup';
-import debug from 'debug';
-import PrettyError from 'pretty-error';
+import { AppErrorHandler } from './routes/errors';
 import apiRouter from './routes/api';
+import 'reflect-metadata';
 
-const pe = new PrettyError();
-pe.skipNodeFiles();
-pe.skipPackage('express');
 const secret = process.env.SESSION_SECRET || "secret";
-const appError = debug('app:error');
 const storeConstructor = connectSessionSequelize(session.Store);
 
 const app = express();
@@ -43,18 +39,6 @@ store.sync();
 
 app.use('/api', apiRouter);
 
-app.use(((error, req, res, next) => {
-    
-    appError(pe.render(error));
-    if (error.statusCode) {
-        res.status(error.statusCode)
-    } else {
-        res.status(400)
-    }
-    res.json({
-        ...error,
-        message: error.message
-    });
-}) as ErrorRequestHandler);
+app.use(AppErrorHandler);
 
 export default app;

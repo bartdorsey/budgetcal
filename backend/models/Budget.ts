@@ -47,7 +47,7 @@ export class Budget extends Model<BudgetAttributes, BudgetCreationAttributes> {
   @BelongsToMany(() => User, () => UserBudget)
   public users!: User[]
 
-  toJSON() {
+  override toJSON() {
     const budget = super.toJSON() as BudgetPOJO;
     return {
       id: budget.id,

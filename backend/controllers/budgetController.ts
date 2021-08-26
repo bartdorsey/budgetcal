@@ -6,7 +6,7 @@ const budgetController = createController({
         const budgets = await user.$get('budgets');
         res.json(budgets);
     },
-    async createBudget({ body, session: { user } }, res) {
+    async createBudget({ body }, res) {
         const budget = await Budget.create({
             name: body.name,
             amount: body.amount,
