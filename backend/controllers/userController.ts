@@ -1,12 +1,13 @@
 import createController from "./createController.js";
-import { User, userRepository } from '../repositories.js';
+import User from '../models/User';
 
 const userController = createController({
     async getUser(req, res, {}) {
-        const user = await userRepository()
-            .where<User>('id', req.session.user.id)
-            .limit(1);
-        res.json(user);
+        const user = await User.query()
+            .withGraphJoined('budgets')
+            .where('users.id', req.params.id)
+            .first();
+        res.json(user.safe());
     }
 });
 

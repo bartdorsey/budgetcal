@@ -3,7 +3,7 @@ const userRouter = express.Router();
 import { authRequired } from '../middleware/authMiddleware.js';
 import { getUser } from '../controllers/userController.js';
 
-// GET /api/users/profile
-userRouter.get('/profile', authRequired, getUser);
+// GET /api/users/:id
+userRouter.get('/:id', authRequired, getUser);
 
 export default userRouter;

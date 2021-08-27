@@ -69,7 +69,7 @@ export const authApi = createApi({
             })
         }),
         protected: builder.mutation<User, void>({
-            query: () => `/auth/restore`
+            query: () => `/auth/verify`
         })
     })
 });
