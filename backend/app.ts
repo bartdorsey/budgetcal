@@ -1,37 +1,46 @@
 import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
+import session from 'express-session';
 import logger from 'morgan';
 import { AppErrorHandler } from './errors.js';
 import apiRouter from './routes/api.js';
 import 'reflect-metadata';
-import type { Express } from 'express';
-import { initialize } from './database.js';
-import getRepositories from './repositories.js';
+import knex from './database';
+import connectPGSimple from 'connect-pg-simple';
+import { Pool } from 'pg';
+const pgSession = connectPGSimple(session);
 
 const secret = process.env.SESSION_SECRET || "secret";
 
-const createApp: () => Promise<Express> = async () => {
-    const connection = await initialize();
-    const repositories = await getRepositories(connection);
+const pool = new Pool({
+    ...knex.client.config.connection
+});
 
-    const app = express();
+const store = new pgSession({
+    pool: pool,
+    tableName: 'sessions'
+});
 
-    app.use(logger('dev'));
-    app.use(express.json());
-    app.use(({}, res, next) => {
-        res.locals.repositories = repositories
-        next();
-    });
-    app.use(express.urlencoded({ extended: false }));
-    app.use(cookieParser(secret));
-    app.use(express.static(path.resolve('public')));
+const app = express();
 
-    app.use('/api', apiRouter);
+app.use(session({
+    secret,
+    cookie: {
+        httpOnly: true,
+        sameSite: 'strict'
+    },
+    store
+}));
 
-    app.use(AppErrorHandler);
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser(secret));
+app.use(express.static(path.resolve('public')));
 
-    return app;
-}
+app.use('/api', apiRouter);
 
-export default createApp;
+app.use(AppErrorHandler);
+
+export default app;

@@ -1,46 +1,51 @@
-// import Sequelize from 'sequelize';
-// const { UniqueConstraintError } = Sequelize;
 import createController from "./createController.js";
-import { databaseError, unauthorizedError, userExistsError } from '../errors.js';
+import { unauthorizedError, userExistsError } from '../errors.js';
 import type { RegistrationRequest, LoginRequest } from '../types/auth.js';
 import bcrypt from 'bcrypt';
-import { PG_UNIQUE_VIOLATION } from 'postgres-error-codes'
+import { User, userRepository } from "../repositories.js";
+import { PG_UNIQUE_VIOLATION } from 'postgres-error-codes';
 
 const SALT_ROUNDS = 10;
 
 const authController = createController({
-    async register(req, res, next, { userRepository }) {
+    async register(req, res, next) {
         console.log("inside Register");
         const { username, email, password } = req.body as RegistrationRequest;
         try {
-            const user = await userRepository.create({
+            const user = await userRepository.insert<User>({
                 username,
                 email,
                 hashedPassword: await bcrypt.hash(password, SALT_ROUNDS)
             });
-            const results = await userRepository.save(user);
-            req.session.user = results;
-            res.json(results);
+            req.session.user = user
+            res.json({
+                username,
+                email
+            });
         }
         catch (error) {
-            if (error.driverError) {
-                switch(error.driverError.code) {
-                    case PG_UNIQUE_VIOLATION:
-                        next(userExistsError());
-                        return;
-                    default:
-                        next(databaseError(error.driverError));
-                        return;
-                }
+            switch(error.code) {
+                case PG_UNIQUE_VIOLATION:
+                    switch(error.constraint) {
+                        case 'users_username_unique':
+                            next(userExistsError(username))
+                            return;
+                        case 'users_email_unique':
+                            next(userExistsError(email))
+                            return;
+                        default: 
+                            next(error);
+                            return;
+                    }
+                default:
+                    next(error);
+                    return;
             }
-            next(error);
         }
     },
-    async login(req, res, next, { userRepository }) {
+    async login(req, res, next) {
         const { email, password } = req.body as LoginRequest;
-        const user = await userRepository.findOne({
-            where: { email }
-        });
+        const user = await userRepository.where<User>('email', email).limit(1);
         if (!user) {
             next(unauthorizedError());
             return;

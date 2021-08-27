@@ -1,8 +1,14 @@
-import { createConnection } from 'typeorm';
+import Knex from 'knex';
+import knexFile from './knexfile.js';
 
-import config from './ormconfig.js';
+const env = process.env.NODE_ENV ?? 'development';
 
-export async function initialize () {
-    const connection = await createConnection(config);
-    return connection;
+const config = {
+    ...knexFile[env]
 }
+
+const knex =  Knex(config)
+
+export default knex;
+
+console.log(knex.client);

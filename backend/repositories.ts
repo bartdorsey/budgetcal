@@ -1,14 +1,19 @@
-import Budget from './entities/Budget.js';
-import User from './entities/User.js';
-import { Connection, Repository } from 'typeorm';
+import knex from './database.js';
 
-export interface RepositoryList {
-    [repositoryName: string]: Repository<any>
+export interface User {
+    id: number,
+    username: string,
+    email: string,
+    hashedPassword: string
 }
 
-export default async function getRepositories(connection: Connection) : Promise<RepositoryList> {
-    return {
-        userRepository: connection.getRepository(User),
-        budgetRepository: connection.getRepository(Budget)
-    }
+export interface Budget {
+    id: number,
+    name: string,
+    amount: number,
+    icon: string,
+    color: string
 }
+
+export const userRepository = knex('users');
+export const budgetRepository = knex('budgets');

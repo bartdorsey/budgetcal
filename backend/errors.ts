@@ -48,8 +48,9 @@ export const unauthorizedError = () =>
 export const passwordInvalidError = () =>
     createHttpError(400, createAppError("Password Invalid"));
   
-export const userExistsError = () =>
-    createHttpError(400, createAppError(`User already exists`));
+export const userExistsError = (message: string) => {
+    return createHttpError(400, createAppError(`User already exists: ${message}`));
+}
 
 export const databaseError = (error: Error) => {
     createHttpError(500, createAppError(`Database Error ${error.message}`));
