@@ -7,7 +7,7 @@ const budgetController = createController({
         res.json(budgets);
     },
     async createBudget({ body }, res, {}) {
-        const budget = await budgetRepository.insert<Budget>({
+        const budget = await budgetRepository().insert<Budget>({
             name: body.name,
             amount: body.amount,
             color: body.color,

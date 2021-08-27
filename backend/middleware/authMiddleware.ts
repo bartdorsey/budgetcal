@@ -10,7 +10,7 @@ const authRequired: RequestHandler = asyncErrorHandler(async (req, {}={}, next) 
     next(unauthorizedError);
     return;
   }
-  const user = await userRepository.where<User>('id', req.session.user.id).limit(1);
+  const user = await userRepository().where<User>('id', req.session.user.id).limit(1);
   if (!user) {
     next(unauthorizedError);
     return;

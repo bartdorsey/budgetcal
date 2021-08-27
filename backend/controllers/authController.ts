@@ -2,7 +2,7 @@ import createController from "./createController.js";
 import { unauthorizedError, userExistsError } from '../errors.js';
 import type { RegistrationRequest, LoginRequest } from '../types/auth.js';
 import bcrypt from 'bcrypt';
-import { User, userRepository } from "../repositories.js";
+import { SafeUser, User, userRepository } from "../repositories.js";
 import { PG_UNIQUE_VIOLATION } from 'postgres-error-codes';
 
 const SALT_ROUNDS = 10;
@@ -12,16 +12,15 @@ const authController = createController({
         console.log("inside Register");
         const { username, email, password } = req.body as RegistrationRequest;
         try {
-            const user = await userRepository.insert<User>({
+            const user = await userRepository().insert<User>({
                 username,
                 email,
                 hashedPassword: await bcrypt.hash(password, SALT_ROUNDS)
             });
-            req.session.user = user
-            res.json({
-                username,
-                email
-            });
+            const safeUser = user as SafeUser;
+            delete safeUser.hashedPassword;
+            req.session.user = safeUser
+            res.json(safeUser);
         }
         catch (error) {
             switch(error.code) {
@@ -45,7 +44,7 @@ const authController = createController({
     },
     async login(req, res, next) {
         const { email, password } = req.body as LoginRequest;
-        const user = await userRepository.where<User>('email', email).limit(1);
+        const user = await userRepository().where<User>('email', email).first();
         if (!user) {
             next(unauthorizedError());
             return;
@@ -55,8 +54,10 @@ const authController = createController({
             return;
         }
         // logged in
-        req.session.user = user;
-        res.json(user);
+        const safeUser = user as SafeUser;
+        delete safeUser.hashedPassword;
+        req.session.user = safeUser;
+        res.json(safeUser);
     },
     async deleteUser(req, res) {
         req.session.destroy(() => {

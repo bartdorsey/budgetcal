@@ -8,6 +8,7 @@ export async function up(knex: Knex): Promise<void> {
         table.decimal('amount').notNullable();
         table.string('icon').notNullable().defaultTo('AttachMoney');
         table.string('color').notNullable().defaultTo('none');
+        table.timestamps(true, true);
     });
 }
 

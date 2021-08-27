@@ -21,8 +21,7 @@ const config: AppConfig = {
         },
         migrations: {
           tableName: 'migrations'
-        },
-        pool: { min: 0, max: 7}
+        }
     },
 
     staging: {

@@ -26,6 +26,8 @@ const app = express();
 
 app.use(session({
     secret,
+    resave: true,
+    saveUninitialized: true,
     cookie: {
         httpOnly: true,
         sameSite: 'strict'

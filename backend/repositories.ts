@@ -7,6 +7,12 @@ export interface User {
     hashedPassword: string
 }
 
+export interface SafeUser {
+    id: number,
+    username: string,
+    email: string,
+    hashedPassword?: string
+}
 export interface Budget {
     id: number,
     name: string,
@@ -15,5 +21,5 @@ export interface Budget {
     color: string
 }
 
-export const userRepository = knex('users');
-export const budgetRepository = knex('budgets');
+export const userRepository = () => knex('users');
+export const budgetRepository = () => knex('budgets');
