@@ -1,13 +1,23 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToMany, PrimaryGeneratedColumn, JoinTable} from "typeorm";
+import Budget from './Budget.js'
+import { IsEmail } from 'class-validator';
 
 @Entity()
-export class User {
+export default class User {
     @PrimaryGeneratedColumn()
     public id!: number;
 
-    @Column()
+    @Column({ nullable: false, unique: true })
     public username!: string;
 
-    @Column()
+    @Column({ nullable: false, unique: true })
+    @IsEmail()
     public email!: string
+
+    @Column({ nullable: false })
+    public hashedPassword!: string
+
+    @ManyToMany(() => Budget, budget => budget.users)
+    @JoinTable()
+    public budgets!: Budget[]
 }

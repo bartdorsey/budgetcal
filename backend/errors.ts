@@ -1,7 +1,7 @@
 import { ErrorRequestHandler } from "express";
 import createHttpError, { HttpError } from "http-errors";
 import type { ValidationError } from 'express-validator';
-import { appError, appLog } from '../logger.js';
+import { appLog, appError } from './logger.js';
 import { serializeError } from 'serialize-error';
 
 export interface AppError {
@@ -33,7 +33,7 @@ export const createAppError = (...errors:AppErrorCollection| string[]) : AppErro
     return response;
 }
 
-export const AppErrorHandler: ErrorRequestHandler = (error: AppErrorResponse, {}, res) => {
+export const AppErrorHandler: ErrorRequestHandler = (error: AppErrorResponse, _req, res, _next) => {
     appError(error);
     res.status(error.httpError.statusCode);
     res.json({
@@ -48,5 +48,9 @@ export const unauthorizedError = () =>
 export const passwordInvalidError = () =>
     createHttpError(400, createAppError("Password Invalid"));
   
-export const userExistsError = (username: string) =>
-    createHttpError(400, createAppError(`${username} already exists`));
+export const userExistsError = () =>
+    createHttpError(400, createAppError(`User already exists`));
+
+export const databaseError = (error: Error) => {
+    createHttpError(500, createAppError(`Database Error ${error.message}`));
+}

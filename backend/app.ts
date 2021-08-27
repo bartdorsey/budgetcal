@@ -1,49 +1,37 @@
 import express from 'express';
-import { Sequelize } from 'sequelize';
 import path from 'path';
 import cookieParser from 'cookie-parser';
-import session from 'express-session';
 import logger from 'morgan';
-import connectSessionSequelize from 'connect-session-sequelize';
-import sequelize from './sequelizeSetup.js';
-import { AppErrorHandler } from './routes/errors.js';
+import { AppErrorHandler } from './errors.js';
 import apiRouter from './routes/api.js';
-// import { createConnection } from 'typeorm';
 import 'reflect-metadata';
-
-const [_, __dirname] = path.dirname(import.meta.url).split(':');
+import type { Express } from 'express';
+import { initialize } from './database.js';
+import getRepositories from './repositories.js';
 
 const secret = process.env.SESSION_SECRET || "secret";
-const storeConstructor = connectSessionSequelize(session.Store);
 
-// const connection = await createConnection();
+const createApp: () => Promise<Express> = async () => {
+    const connection = await initialize();
+    const repositories = await getRepositories(connection);
 
-const app = express();
+    const app = express();
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+    app.use(logger('dev'));
+    app.use(express.json());
+    app.use(({}, res, next) => {
+        res.locals.repositories = repositories
+        next();
+    });
+    app.use(express.urlencoded({ extended: false }));
+    app.use(cookieParser(secret));
+    app.use(express.static(path.resolve('public')));
 
-const store = new storeConstructor({db:sequelize as Sequelize});
+    app.use('/api', apiRouter);
 
-app.use(session({
-    store,
-    secret,
-    saveUninitialized: true,
-    resave: false,
-    cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict'
-    }
-}));
+    app.use(AppErrorHandler);
 
-store.sync();
+    return app;
+}
 
-app.use('/api', apiRouter);
-
-app.use(AppErrorHandler);
-
-export default app;
+export default createApp;

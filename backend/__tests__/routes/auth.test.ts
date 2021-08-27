@@ -1,16 +1,11 @@
-import sequelize from '../../sequelizeSetup';
-import { migrateAll } from '../../migrations';
 import app from '../../app';
 import request from 'supertest';
 
 describe('/api/auth', () => {
     beforeAll(async() => {
-        await sequelize.query('SELECT 1+1;');
-        await migrateAll();
     });
 
     afterAll(async() => {
-        await sequelize.close();
     });
     describe('/api/auth/register', () => {
         it('registers a new user', async () => {

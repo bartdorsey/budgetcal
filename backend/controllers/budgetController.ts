@@ -1,19 +1,20 @@
 import createController from "./createController.js";
-import Budget from "../models/Budget.js";
+
 
 const budgetController = createController({
     async getBudgets({ session: { user } }, res) {
         const budgets = await user.$get('budgets');
         res.json(budgets);
     },
-    async createBudget({ body }, res) {
-        const budget = await Budget.create({
+    async createBudget({ body }, res, {}, { budgetRepository }) {
+        const budget = await budgetRepository.create({
             name: body.name,
             amount: body.amount,
             color: body.color,
             icon: body.icon
         })
-        res.json(budget);
+        const result = budgetRepository.save(budget);
+        res.json(result);
     }
 });
 

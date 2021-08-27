@@ -1,38 +1,44 @@
-import Sequelize from 'sequelize';
-const { UniqueConstraintError } = Sequelize;
+// import Sequelize from 'sequelize';
+// const { UniqueConstraintError } = Sequelize;
 import createController from "./createController.js";
-import User from '../models/User.js';
-import { userExistsError, unauthorizedError } from '../routes/errors.js';
+import { databaseError, unauthorizedError, userExistsError } from '../errors.js';
 import type { RegistrationRequest, LoginRequest } from '../types/auth.js';
 import bcrypt from 'bcrypt';
+import { PG_UNIQUE_VIOLATION } from 'postgres-error-codes'
 
 const SALT_ROUNDS = 10;
 
 const authController = createController({
-    async register(req, res, next) {
+    async register(req, res, next, { userRepository }) {
         console.log("inside Register");
         const { username, email, password } = req.body as RegistrationRequest;
         try {
-            const user = await User.create({
+            const user = await userRepository.create({
                 username,
                 email,
                 hashedPassword: await bcrypt.hash(password, SALT_ROUNDS)
             });
-            req.session.user = user;
-            res.json(user);
+            const results = await userRepository.save(user);
+            req.session.user = results;
+            res.json(results);
         }
         catch (error) {
-            if (error instanceof UniqueConstraintError) {
-                next(userExistsError(username));
-                return;
+            if (error.driverError) {
+                switch(error.driverError.code) {
+                    case PG_UNIQUE_VIOLATION:
+                        next(userExistsError());
+                        return;
+                    default:
+                        next(databaseError(error.driverError));
+                        return;
+                }
             }
-            console.error(error);
             next(error);
         }
     },
-    async login(req, res, next) {
+    async login(req, res, next, { userRepository }) {
         const { email, password } = req.body as LoginRequest;
-        const user = await User.findOne({
+        const user = await userRepository.findOne({
             where: { email }
         });
         if (!user) {
